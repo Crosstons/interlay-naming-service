@@ -1,11 +1,26 @@
 import React, { useState } from "react";
-
+import { useEffect } from "react";
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+    const [isOpen, setIsOpen] = useState(false);
+    const [showSearch, setShowSearch] = useState(false);
+  
+    const toggleDropdown = () => {
+      setIsOpen(!isOpen);
+    };
+  
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > 100) {
+        setShowSearch(true);
+      } else {
+        setShowSearch(false);
+      }
+    };
+  
+    useEffect(() => {
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
   return (
     <nav className="bg-gray-800 shadow-md">
@@ -53,6 +68,20 @@ const Navbar = () => {
                 </div>
               )}
             </div>
+            {/* Search bar */}
+{showSearch && (
+  <form className="hidden md:flex w-1/3">
+    <input
+      type="text"
+      placeholder="Search for your domain"
+      className="w-full px-4 py-2 rounded-l-lg focus:outline-none bg-gray-900 text-white"
+    />
+    <button className="bg-blue-500 text-white px-4 py-2 rounded-r-lg font-mono transition duration-300 ease-in-out hover:bg-blue-600">
+      Search
+    </button>
+  </form>
+)}
+
           </div>
 
           {/* Divider */}
