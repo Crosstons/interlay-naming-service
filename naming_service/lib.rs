@@ -2,141 +2,261 @@
 
 #[ink::contract]
 mod naming_service {
+    use ink::storage::Mapping;
 
-    /// Defines the storage of your contract.
-    /// Add new fields to the below struct in order
-    /// to add new static storage fields to your contract.
+    /// Emitted whenever a new name is being registered.
+    #[ink(event)]
+    pub struct Register {
+        #[ink(topic)]
+        name: Hash,
+        #[ink(topic)]
+        from: AccountId,
+    }
+
+    /// Emitted whenever an address changes.
+    #[ink(event)]
+    pub struct SetAddress {
+        #[ink(topic)]
+        name: Hash,
+        from: AccountId,
+        #[ink(topic)]
+        old_address: Option<AccountId>,
+        #[ink(topic)]
+        new_address: AccountId,
+    }
+
+    /// Emitted whenever a name is being transferred.
+    #[ink(event)]
+    pub struct Transfer {
+        #[ink(topic)]
+        name: Hash,
+        from: AccountId,
+        #[ink(topic)]
+        old_owner: Option<AccountId>,
+        #[ink(topic)]
+        new_owner: AccountId,
+    }
+
+    /// Domain name service contract inspired by
+    /// [this blog post](https://medium.com/@chainx_org/secure-and-decentralized-polkadot-domain-name-system-e06c35c2a48d).
+    ///
+    /// # Note
+    ///
+    /// This is a port from the blog post's ink! 1.0 based version of the contract
+    /// to ink! 2.0.
+    ///
+    /// # Description
+    ///
+    /// The main function of this contract is domain name resolution which
+    /// refers to the retrieval of numeric values corresponding to readable
+    /// and easily memorable names such as "polka.dot" which can be used
+    /// to facilitate transfers, voting and DApp-related operations instead
+    /// of resorting to long IP addresses that are hard to remember.
     #[ink(storage)]
-    pub struct NamingService {
-        /// Stores a single `bool` value on the storage.
-        value: bool,
+    pub struct DomainNameService {
+        /// A hashmap to store all name to addresses mapping.
+        name_to_address: Mapping<Hash, AccountId>,
+        /// A hashmap to store all name to owners mapping.
+        name_to_owner: Mapping<Hash, AccountId>,
+        /// The default address.
+        default_address: AccountId,
     }
 
-    impl NamingService {
-        /// Constructor that initializes the `bool` value to the given `init_value`.
-        #[ink(constructor)]
-        pub fn new(init_value: bool) -> Self {
-            Self { value: init_value }
-        }
+    impl Default for DomainNameService {
+        fn default() -> Self {
+            let mut name_to_address = Mapping::new();
+            name_to_address.insert(Hash::default(), &zero_address());
+            let mut name_to_owner = Mapping::new();
+            name_to_owner.insert(Hash::default(), &zero_address());
 
-        /// Constructor that initializes the `bool` value to `false`.
-        ///
-        /// Constructors can delegate to other constructors.
-        #[ink(constructor)]
-        pub fn default() -> Self {
-            Self::new(Default::default())
-        }
-
-        /// A message that can be called on instantiated contracts.
-        /// This one flips the value of the stored `bool` from `true`
-        /// to `false` and vice versa.
-        #[ink(message)]
-        pub fn flip(&mut self) {
-            self.value = !self.value;
-        }
-
-        /// Simply returns the current value of our `bool`.
-        #[ink(message)]
-        pub fn get(&self) -> bool {
-            self.value
+            Self {
+                name_to_address,
+                name_to_owner,
+                default_address: zero_address(),
+            }
         }
     }
 
-    /// Unit tests in Rust are normally defined within such a `#[cfg(test)]`
-    /// module and test functions are marked with a `#[test]` attribute.
-    /// The below code is technically just normal Rust code.
+    /// Errors that can occur upon calling this contract.
+    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    pub enum Error {
+        /// Returned if the name already exists upon registration.
+        NameAlreadyExists,
+        /// Returned if caller is not owner while required to.
+        CallerIsNotOwner,
+    }
+
+    /// Type alias for the contract's result type.
+    pub type Result<T> = core::result::Result<T, Error>;
+
+    impl DomainNameService {
+        /// Creates a new domain name service contract.
+        #[ink(constructor)]
+        pub fn new() -> Self {
+            Default::default()
+        }
+
+        /// Register specific name with caller as owner.
+        #[ink(message)]
+        pub fn register(&mut self, name: Hash) -> Result<()> {
+            let caller = self.env().caller();
+            if self.name_to_owner.contains(name) {
+                return Err(Error::NameAlreadyExists)
+            }
+
+            self.name_to_owner.insert(name, &caller);
+            self.env().emit_event(Register { name, from: caller });
+
+            Ok(())
+        }
+
+        /// Set address for specific name.
+        #[ink(message)]
+        pub fn set_address(&mut self, name: Hash, new_address: AccountId) -> Result<()> {
+            let caller = self.env().caller();
+            let owner = self.get_owner_or_default(name);
+            if caller != owner {
+                return Err(Error::CallerIsNotOwner)
+            }
+
+            let old_address = self.name_to_address.get(name);
+            self.name_to_address.insert(name, &new_address);
+
+            self.env().emit_event(SetAddress {
+                name,
+                from: caller,
+                old_address,
+                new_address,
+            });
+            Ok(())
+        }
+
+        /// Transfer owner to another address.
+        #[ink(message)]
+        pub fn transfer(&mut self, name: Hash, to: AccountId) -> Result<()> {
+            let caller = self.env().caller();
+            let owner = self.get_owner_or_default(name);
+            if caller != owner {
+                return Err(Error::CallerIsNotOwner)
+            }
+
+            let old_owner = self.name_to_owner.get(name);
+            self.name_to_owner.insert(name, &to);
+
+            self.env().emit_event(Transfer {
+                name,
+                from: caller,
+                old_owner,
+                new_owner: to,
+            });
+
+            Ok(())
+        }
+
+        /// Get address for specific name.
+        #[ink(message)]
+        pub fn get_address(&self, name: Hash) -> AccountId {
+            self.get_address_or_default(name)
+        }
+
+        /// Get owner of specific name.
+        #[ink(message)]
+        pub fn get_owner(&self, name: Hash) -> AccountId {
+            self.get_owner_or_default(name)
+        }
+
+        /// Returns the owner given the hash or the default address.
+        fn get_owner_or_default(&self, name: Hash) -> AccountId {
+            self.name_to_owner.get(name).unwrap_or(self.default_address)
+        }
+
+        /// Returns the address given the hash or the default address.
+        fn get_address_or_default(&self, name: Hash) -> AccountId {
+            self.name_to_address
+                .get(name)
+                .unwrap_or(self.default_address)
+        }
+    }
+
+    /// Helper for referencing the zero address (`0x00`). Note that in practice this address should
+    /// not be treated in any special way (such as a default placeholder) since it has a known
+    /// private key.
+    fn zero_address() -> AccountId {
+        [0u8; 32].into()
+    }
+
     #[cfg(test)]
     mod tests {
-        /// Imports all the definitions from the outer scope so we can use them here.
         use super::*;
 
-        /// We test if the default constructor does its job.
+        fn default_accounts(
+        ) -> ink::env::test::DefaultAccounts<ink::env::DefaultEnvironment> {
+            ink::env::test::default_accounts::<Environment>()
+        }
+
+        fn set_next_caller(caller: AccountId) {
+            ink::env::test::set_caller::<Environment>(caller);
+        }
+
         #[ink::test]
-        fn default_works() {
-            let naming_service = NamingService::default();
-            assert_eq!(naming_service.get(), false);
+        fn register_works() {
+            let default_accounts = default_accounts();
+            let name = Hash::from([0x99; 32]);
+
+            set_next_caller(default_accounts.alice);
+            let mut contract = DomainNameService::new();
+
+            assert_eq!(contract.register(name), Ok(()));
+            assert_eq!(contract.register(name), Err(Error::NameAlreadyExists));
         }
 
-        /// We test a simple use case of our contract.
         #[ink::test]
-        fn it_works() {
-            let mut naming_service = NamingService::new(false);
-            assert_eq!(naming_service.get(), false);
-            naming_service.flip();
-            assert_eq!(naming_service.get(), true);
-        }
-    }
+        fn set_address_works() {
+            let accounts = default_accounts();
+            let name = Hash::from([0x99; 32]);
 
+            set_next_caller(accounts.alice);
 
-    /// This is how you'd write end-to-end (E2E) or integration tests for ink! contracts.
-    ///
-    /// When running these you need to make sure that you:
-    /// - Compile the tests with the `e2e-tests` feature flag enabled (`--features e2e-tests`)
-    /// - Are running a Substrate node which contains `pallet-contracts` in the background
-    #[cfg(all(test, feature = "e2e-tests"))]
-    mod e2e_tests {
-        /// Imports all the definitions from the outer scope so we can use them here.
-        use super::*;
+            let mut contract = DomainNameService::new();
+            assert_eq!(contract.register(name), Ok(()));
 
-        /// A helper function used for calling contract messages.
-        use ink_e2e::build_message;
+            // Caller is not owner, `set_address` should fail.
+            set_next_caller(accounts.bob);
+            assert_eq!(
+                contract.set_address(name, accounts.bob),
+                Err(Error::CallerIsNotOwner)
+            );
 
-        /// The End-to-End test `Result` type.
-        type E2EResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
-
-        /// We test that we can upload and instantiate the contract using its default constructor.
-        #[ink_e2e::test]
-        async fn default_works(mut client: ink_e2e::Client<C, E>) -> E2EResult<()> {
-            // Given
-            let constructor = NamingServiceRef::default();
-
-            // When
-            let contract_account_id = client
-                .instantiate("naming_service", &ink_e2e::alice(), constructor, 0, None)
-                .await
-                .expect("instantiate failed")
-                .account_id;
-
-            // Then
-            let get = build_message::<NamingServiceRef>(contract_account_id.clone())
-                .call(|naming_service| naming_service.get());
-            let get_result = client.call_dry_run(&ink_e2e::alice(), &get, 0, None).await;
-            assert!(matches!(get_result.return_value(), false));
-
-            Ok(())
+            // Caller is owner, set_address will be successful
+            set_next_caller(accounts.alice);
+            assert_eq!(contract.set_address(name, accounts.bob), Ok(()));
+            assert_eq!(contract.get_address(name), accounts.bob);
         }
 
-        /// We test that we can read and write a value from the on-chain contract contract.
-        #[ink_e2e::test]
-        async fn it_works(mut client: ink_e2e::Client<C, E>) -> E2EResult<()> {
-            // Given
-            let constructor = NamingServiceRef::new(false);
-            let contract_account_id = client
-                .instantiate("naming_service", &ink_e2e::bob(), constructor, 0, None)
-                .await
-                .expect("instantiate failed")
-                .account_id;
+        #[ink::test]
+        fn transfer_works() {
+            let accounts = default_accounts();
+            let name = Hash::from([0x99; 32]);
 
-            let get = build_message::<NamingServiceRef>(contract_account_id.clone())
-                .call(|naming_service| naming_service.get());
-            let get_result = client.call_dry_run(&ink_e2e::bob(), &get, 0, None).await;
-            assert!(matches!(get_result.return_value(), false));
+            set_next_caller(accounts.alice);
 
-            // When
-            let flip = build_message::<NamingServiceRef>(contract_account_id.clone())
-                .call(|naming_service| naming_service.flip());
-            let _flip_result = client
-                .call(&ink_e2e::bob(), flip, 0, None)
-                .await
-                .expect("flip failed");
+            let mut contract = DomainNameService::new();
+            assert_eq!(contract.register(name), Ok(()));
 
-            // Then
-            let get = build_message::<NamingServiceRef>(contract_account_id.clone())
-                .call(|naming_service| naming_service.get());
-            let get_result = client.call_dry_run(&ink_e2e::bob(), &get, 0, None).await;
-            assert!(matches!(get_result.return_value(), true));
+            // Test transfer of owner.
+            assert_eq!(contract.transfer(name, accounts.bob), Ok(()));
 
-            Ok(())
+            // Owner is bob, alice `set_address` should fail.
+            assert_eq!(
+                contract.set_address(name, accounts.bob),
+                Err(Error::CallerIsNotOwner)
+            );
+
+            set_next_caller(accounts.bob);
+            // Now owner is bob, `set_address` should be successful.
+            assert_eq!(contract.set_address(name, accounts.bob), Ok(()));
+            assert_eq!(contract.get_address(name), accounts.bob);
         }
     }
 }
