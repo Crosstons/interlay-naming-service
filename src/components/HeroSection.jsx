@@ -41,12 +41,12 @@ const HeroSection = () => {
           {/* Search bar */}
           <form
             onSubmit={handleSearchSubmit}
-            className="flex w-3/4 md:w-1/2 mb-8 bg-white shadow-lg rounded-full overflow-hidden"
+            className="flex w-3/4 md:w-1/2 mb-8 bg-gray-700 shadow-lg rounded-lg overflow-hidden"
           >
             <input
               type="text"
               placeholder="Search for your domain"
-              className="w-full px-4 py-2 focus:outline-none poppins transition duration-300 ease-in-out focus:bg-gray-100"
+              className="w-full px-4 py-2 focus:outline-none poppins transition duration-300 ease-in-out focus:bg-gray-100 text-black bg-gray-50"
               value={search}
               onChange={handleSearchChange}
             />
