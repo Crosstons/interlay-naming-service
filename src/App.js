@@ -1,9 +1,9 @@
-import logo from './logo.svg';
-import Landing from '../src/views/Landing';
+import Landing from './views/Landing';
+import Dashboard from './views/Dashboard';
 function App() {
   return (
     <div className="relative min-h-screen">
-    <Landing />
+    <Dashboard />
     </div>
   );
 }
