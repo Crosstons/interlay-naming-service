@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiCopy } from 'react-icons/fi';
+import { BounceLoader } from 'react-spinners';
 import RegisterTab from './RegisterTab';
 import DetailsTab from './DetailsTab';
 import SubdomainsTab from './SubdomainsTab';
 
 const DomainInfo = () => {
   const [activeTab, setActiveTab] = useState('register');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleTabClick = (tabName) => {
+    setIsLoading(true);
     setActiveTab(tabName);
   };
 
@@ -23,6 +26,14 @@ const DomainInfo = () => {
         return null;
     }
   };
+
+  useEffect(() => {
+    if (isLoading) {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    }
+  }, [isLoading]);
 
   return (
     <div className="bg-gray-700 text-white pb-10 mt-4 poppins rounded">
@@ -68,9 +79,15 @@ const DomainInfo = () => {
             </ul>
           </div>
         </div>
-         {/* Tab content */}
-         <div className="mt-8">
-          {renderTabContent()}
+        {/* Tab content */}
+        <div className="mt-8">
+          {isLoading ? (
+            <div className="flex justify-center">
+              <BounceLoader color={'#60A5FA'} />
+            </div>
+          ) : (
+            renderTabContent()
+          )}
         </div>
       </div>
     </div>
