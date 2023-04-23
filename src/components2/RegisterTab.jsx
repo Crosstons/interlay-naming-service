@@ -12,7 +12,7 @@ const RegisterTab = () => {
   };
 
   return (
-    <div className="flex flex-col space-y-5 ">
+    <div className="flex flex-col space-y-5 bg-gray-900 p-4 rounded-lg">
       <div className="relative">
         <input
           type="number"
