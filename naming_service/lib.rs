@@ -52,30 +52,38 @@ pub mod naming_service {
     pub struct NamingService {
         domains: Mapping<Vec<u8>, DomainInfo>,
         suffixes: Vec<Vec<u8>>,
+        dao_treasury: AccountId,
     }
 
     impl NamingService {
         #[ink(constructor)]
-        pub fn new() -> Self {
+        pub fn new(dao_treasury: AccountId) -> Self {
             let mut suffixes = Vec::new();
             suffixes.push(".kbtc".as_bytes().to_vec());
             suffixes.push(".kint".as_bytes().to_vec());
+            let domains = Mapping::default();
             Self {
-                domains: Mapping::default(),
+                domains,
                 suffixes,
+                dao_treasury,
             }
         }
 
         #[ink(message, payable)]
         pub fn register_domain(&mut self, name: Vec<u8>, suffix_idx: u32, days: u64) -> bool {
+            let base = 100000000;
             if suffix_idx >= self.suffixes.len() as u32 {
                 return false;
             }
-            if days > MAX_DAYS || days <= 1 {
+            
+            let value = self.env().transferred_value(); 
+            let fee = days as Balance;
+            
+            if days > MAX_DAYS || days < 1 {
                 return false;
             }
 
-            if !Self::is_valid_domain_name(&name) || name.len() <= 2 {
+            if !Self::is_valid_domain_name(&name) || name.len() < 3 {
                 return false;
             }
 
@@ -84,7 +92,7 @@ pub mod naming_service {
             let caller = self.env().caller();
             
 
-            if self.domains.contains(&full_name)
+            if self.domains.contains(&full_name) || value < fee * base
             {
                 return false;
             }
@@ -101,15 +109,31 @@ pub mod naming_service {
 
             self.env().emit_event(DomainRegistered { name: full_name, owner: caller });            
 
+	    if let Err(_) = self.env().transfer(self.dao_treasury, value) {
+                return false;
+            }
+
             true            
         }
 
         #[ink(message, payable)]
         pub fn renew_domain(&mut self, name: Vec<u8>, days: u64) -> bool {
-
-            if days > MAX_DAYS || days <= 1 {
+	    let base = 100000000;
+            if days > MAX_DAYS || days < 1 {
                 return false;
             }
+            
+            let value = self.env().transferred_value(); 
+            let fee = days as Balance;
+            
+            if value  < fee * base {
+            	return false;
+            }
+            
+            if let Err(_) = self.env().transfer(self.dao_treasury, value) {
+                return false;
+            }                    
+                   
 
 	    if let Some(mut domain_info) = self.domains.take(&name) {
                 if domain_info.owner == self.env().caller() {                  
