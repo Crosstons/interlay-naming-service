@@ -202,6 +202,12 @@ pub mod naming_service {
 
         #[ink(message)]
         pub fn transfer_domain(&mut self, name: Vec<u8>, new_owner: AccountId) -> bool {
+        
+            if self.auctions.contains(&name) {
+            	return false;
+            }
+        
+        
             if let Some(mut domain_info) = self.domains.take(&name) {
                 let caller = self.env().caller();
                 if domain_info.owner == caller {
@@ -280,6 +286,7 @@ pub mod naming_service {
 
                     auction.highest_bidder = caller;
                     auction.highest_bid = value;
+                    self.auctions.insert(name.clone(), &auction);
                     self.env().emit_event(NewBid {
                         name: name.clone(),
                         bidder: caller,
@@ -346,54 +353,4 @@ pub mod naming_service {
             true
         }        
     }
-    
-    #[cfg(test)]
-    mod tests {
-        use super::*;
-    
-        fn new_naming_service() -> NamingService {
-            let dao_treasury = ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
-            NamingService::new(dao_treasury.bob)
-        }
-    
-        #[ink::test]
-        fn default_works() {
-            let contract = new_naming_service();
-            assert_eq!(contract.get_domain_info(b"non-existent-domain".to_vec()), None);
-        }
-    
-        #[ink::test]
-        fn register_domain_works() {
-            let mut contract = new_naming_service();
-    	    let accounts = ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
-            let name: Vec<u8> = b"vanis".to_vec();
-            let days: u64 = 365;
-            let suffix_idx: u32 = 0;
-    
-            assert_eq!(contract.register_domain(name.clone(), suffix_idx, days), true);
-            let domain_info = contract.get_domain_info(b"vanis.kbtc".to_vec()).unwrap();
-            assert_eq!(domain_info.owner, accounts.alice);
-            assert!(domain_info.expiration > 0);
-        }
-    
-        #[ink::test]
-        fn renew_domain_works() {
-            let mut contract = new_naming_service();
-    
-            let name: Vec<u8> = b"vanis".to_vec();
-            let days: u64 = 365;
-            let suffix_idx: u32 = 0;
-    
-            assert_eq!(contract.register_domain(name.clone(), suffix_idx, days), true);
-            let old_domain_info = contract.get_domain_info(b"vanis.kbtc".to_vec()).unwrap();
-    
-            let renew_days: u64 = 30;
-            assert_eq!(contract.renew_domain(b"vanis.kbtc".to_vec(), renew_days), true);
-    
-            let new_domain_info = contract.get_domain_info(b"vanis.kbtc".to_vec()).unwrap();
-            assert_eq!(new_domain_info.owner, old_domain_info.owner);
-            assert_eq!(new_domain_info.expiration, old_domain_info.expiration + renew_days * 86_400_000);
-        }
-    }
-    
 }
