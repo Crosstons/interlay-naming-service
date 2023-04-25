@@ -1,0 +1,669 @@
+{
+  "source": {
+    "hash": "0x76aec1d12d1425605c04c83bc48aab4904dbbccaf65dc0effc89bb68b1e6ba2d",
+    "language": "ink! 4.1.0",
+    "compiler": "rustc 1.66.0",
+    "build_info": {
+      "build_mode": "Debug",
+      "cargo_contract_version": "2.1.0",
+      "rust_toolchain": "stable-x86_64-unknown-linux-gnu",
+      "wasm_opt_settings": {
+        "keep_debug_symbols": false,
+        "optimization_passes": "Z"
+      }
+    }
+  },
+  "contract": {
+    "name": "naming_service",
+    "version": "0.1.0",
+    "authors": [
+      "[your_name] <[your_email]>"
+    ]
+  },
+  "spec": {
+    "constructors": [
+      {
+        "args": [
+          {
+            "label": "dao_treasury",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "docs": [],
+        "label": "new",
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink_primitives",
+            "ConstructorResult"
+          ],
+          "type": 6
+        },
+        "selector": "0x9bae9d5e"
+      }
+    ],
+    "docs": [],
+    "events": [
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "owner",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "docs": [],
+        "label": "DomainRegistered"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          }
+        ],
+        "docs": [],
+        "label": "DomainDeregistered"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "from",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "to",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "docs": [],
+        "label": "DomainTransferred"
+      }
+    ],
+    "lang_error": {
+      "displayName": [
+        "ink",
+        "LangError"
+      ],
+      "type": 8
+    },
+    "messages": [
+      {
+        "args": [
+          {
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "suffix_idx",
+            "type": {
+              "displayName": [
+                "u32"
+              ],
+              "type": 9
+            }
+          },
+          {
+            "label": "days",
+            "type": {
+              "displayName": [
+                "u64"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "docs": [],
+        "label": "register_domain",
+        "mutates": true,
+        "payable": true,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 10
+        },
+        "selector": "0x391c40cf"
+      },
+      {
+        "args": [
+          {
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "days",
+            "type": {
+              "displayName": [
+                "u64"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "docs": [],
+        "label": "renew_domain",
+        "mutates": true,
+        "payable": true,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 10
+        },
+        "selector": "0x3b83a7f0"
+      },
+      {
+        "args": [
+          {
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "new_owner",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "docs": [],
+        "label": "transfer_domain",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 10
+        },
+        "selector": "0xc02f92a1"
+      },
+      {
+        "args": [
+          {
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          }
+        ],
+        "docs": [],
+        "label": "deregister_domain",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 10
+        },
+        "selector": "0x54caf59f"
+      },
+      {
+        "args": [
+          {
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 5
+            }
+          }
+        ],
+        "docs": [],
+        "label": "get_domain_info",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 12
+        },
+        "selector": "0xa1b53b8b"
+      }
+    ]
+  },
+  "storage": {
+    "root": {
+      "layout": {
+        "struct": {
+          "fields": [
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xdc97da32",
+                              "ty": 0
+                            }
+                          },
+                          "name": "owner"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xdc97da32",
+                              "ty": 3
+                            }
+                          },
+                          "name": "expiration"
+                        }
+                      ],
+                      "name": "DomainInfo"
+                    }
+                  },
+                  "root_key": "0xdc97da32"
+                }
+              },
+              "name": "domains"
+            },
+            {
+              "layout": {
+                "leaf": {
+                  "key": "0x00000000",
+                  "ty": 4
+                }
+              },
+              "name": "suffixes"
+            },
+            {
+              "layout": {
+                "leaf": {
+                  "key": "0x00000000",
+                  "ty": 0
+                }
+              },
+              "name": "dao_treasury"
+            }
+          ],
+          "name": "NamingService"
+        }
+      },
+      "root_key": "0x00000000"
+    }
+  },
+  "types": [
+    {
+      "id": 0,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "type": 1,
+                "typeName": "[u8; 32]"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "types",
+          "AccountId"
+        ]
+      }
+    },
+    {
+      "id": 1,
+      "type": {
+        "def": {
+          "array": {
+            "len": 32,
+            "type": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": {
+        "def": {
+          "primitive": "u8"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": {
+        "def": {
+          "primitive": "u64"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 5
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 7
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 8
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 7
+          },
+          {
+            "name": "E",
+            "type": 8
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "type": {
+        "def": {
+          "tuple": []
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 1,
+                "name": "CouldNotReadInput"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "LangError"
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "type": {
+        "def": {
+          "primitive": "u32"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 11
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 8
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 11
+          },
+          {
+            "name": "E",
+            "type": 8
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "type": {
+        "def": {
+          "primitive": "bool"
+        }
+      }
+    },
+    {
+      "id": 12,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 13
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 8
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 13
+          },
+          {
+            "name": "E",
+            "type": 8
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 14
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 14
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "owner",
+                "type": 0,
+                "typeName": "AccountId"
+              },
+              {
+                "name": "expiration",
+                "type": 3,
+                "typeName": "Timestamp"
+              }
+            ]
+          }
+        },
+        "path": [
+          "naming_service",
+          "naming_service",
+          "DomainInfo"
+        ]
+      }
+    }
+  ],
+  "version": "4"
+}
