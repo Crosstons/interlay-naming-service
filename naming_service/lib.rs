@@ -63,6 +63,7 @@ pub mod naming_service {
     	seller: AccountId,
         highest_bidder: AccountId,
         highest_bid: Balance,
+        starting_bid: Balance,
         end_time: Timestamp,
     }
 
@@ -243,7 +244,7 @@ pub mod naming_service {
         }
         
 	#[ink(message, payable)]
-	pub fn create_auction(&mut self, name: Vec<u8>, duration: Timestamp) -> bool {
+	pub fn create_auction(&mut self, name: Vec<u8>, duration: Timestamp, starting_bid: Balance) -> bool {
 
 	    if self.auctions.contains(&name) {
 		return false;
@@ -257,9 +258,10 @@ pub mod naming_service {
 		    self.auctions.insert(
 		        name.clone(),
 		        &Auction {
-		            seller : caller,
+		            seller: caller,
 		            highest_bidder: caller,
-		            highest_bid: 0,
+		            highest_bid: starting_bid,
+		            starting_bid: starting_bid,
 		            end_time,
 		        },
 		    );

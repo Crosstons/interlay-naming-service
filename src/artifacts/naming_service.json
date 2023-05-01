@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x76aec1d12d1425605c04c83bc48aab4904dbbccaf65dc0effc89bb68b1e6ba2d",
+    "hash": "0x82ba4badcc374980a89e266ff3ec5cf9254024b3bd40e32d7482a507dbd149ff",
     "language": "ink! 4.1.0",
     "compiler": "rustc 1.66.0",
     "build_info": {
@@ -42,7 +42,7 @@
             "ink_primitives",
             "ConstructorResult"
           ],
-          "type": 6
+          "type": 7
         },
         "selector": "0x9bae9d5e"
       }
@@ -59,7 +59,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 5
+              "type": 6
             }
           },
           {
@@ -87,7 +87,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 5
+              "type": 6
             }
           }
         ],
@@ -104,7 +104,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 5
+              "type": 6
             }
           },
           {
@@ -132,6 +132,112 @@
         ],
         "docs": [],
         "label": "DomainTransferred"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 6
+            }
+          },
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "end_time",
+            "type": {
+              "displayName": [
+                "Timestamp"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "docs": [],
+        "label": "AuctionCreated"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 6
+            }
+          },
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "bidder",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "bid",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 4
+            }
+          }
+        ],
+        "docs": [],
+        "label": "NewBid"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 6
+            }
+          },
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "winner",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "docs": [],
+            "indexed": true,
+            "label": "winning_bid",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 4
+            }
+          }
+        ],
+        "docs": [],
+        "label": "AuctionEnded"
       }
     ],
     "lang_error": {
@@ -139,7 +245,7 @@
         "ink",
         "LangError"
       ],
-      "type": 8
+      "type": 9
     },
     "messages": [
       {
@@ -150,7 +256,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 5
+              "type": 6
             }
           },
           {
@@ -159,7 +265,7 @@
               "displayName": [
                 "u32"
               ],
-              "type": 9
+              "type": 10
             }
           },
           {
@@ -181,7 +287,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 10
+          "type": 11
         },
         "selector": "0x391c40cf"
       },
@@ -193,7 +299,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 5
+              "type": 6
             }
           },
           {
@@ -215,7 +321,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 10
+          "type": 11
         },
         "selector": "0x3b83a7f0"
       },
@@ -227,7 +333,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 5
+              "type": 6
             }
           },
           {
@@ -249,7 +355,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 10
+          "type": 11
         },
         "selector": "0xc02f92a1"
       },
@@ -261,7 +367,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 5
+              "type": 6
             }
           }
         ],
@@ -274,7 +380,7 @@
             "ink",
             "MessageResult"
           ],
-          "type": 10
+          "type": 11
         },
         "selector": "0x54caf59f"
       },
@@ -286,7 +392,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 5
+              "type": 6
             }
           }
         ],
@@ -299,9 +405,102 @@
             "ink",
             "MessageResult"
           ],
-          "type": 12
+          "type": 13
         },
         "selector": "0xa1b53b8b"
+      },
+      {
+        "args": [
+          {
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 6
+            }
+          },
+          {
+            "label": "duration",
+            "type": {
+              "displayName": [
+                "Timestamp"
+              ],
+              "type": 3
+            }
+          },
+          {
+            "label": "starting_bid",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 4
+            }
+          }
+        ],
+        "docs": [],
+        "label": "create_auction",
+        "mutates": true,
+        "payable": true,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 11
+        },
+        "selector": "0xd6cd59d7"
+      },
+      {
+        "args": [
+          {
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 6
+            }
+          }
+        ],
+        "docs": [],
+        "label": "bid",
+        "mutates": true,
+        "payable": true,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 11
+        },
+        "selector": "0x668d28a7"
+      },
+      {
+        "args": [
+          {
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 6
+            }
+          }
+        ],
+        "docs": [],
+        "label": "finalize_auction",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 11
+        },
+        "selector": "0x28dd27b4"
       }
     ]
   },
@@ -345,9 +544,69 @@
             },
             {
               "layout": {
+                "root": {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x9892894c",
+                              "ty": 0
+                            }
+                          },
+                          "name": "seller"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x9892894c",
+                              "ty": 0
+                            }
+                          },
+                          "name": "highest_bidder"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x9892894c",
+                              "ty": 4
+                            }
+                          },
+                          "name": "highest_bid"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x9892894c",
+                              "ty": 4
+                            }
+                          },
+                          "name": "starting_bid"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x9892894c",
+                              "ty": 3
+                            }
+                          },
+                          "name": "end_time"
+                        }
+                      ],
+                      "name": "Auction"
+                    }
+                  },
+                  "root_key": "0x9892894c"
+                }
+              },
+              "name": "auctions"
+            },
+            {
+              "layout": {
                 "leaf": {
                   "key": "0x00000000",
-                  "ty": 4
+                  "ty": 5
                 }
               },
               "name": "suffixes"
@@ -420,14 +679,22 @@
       "id": 4,
       "type": {
         "def": {
-          "sequence": {
-            "type": 5
-          }
+          "primitive": "u128"
         }
       }
     },
     {
       "id": 5,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 6
+          }
+        }
+      }
+    },
+    {
+      "id": 6,
       "type": {
         "def": {
           "sequence": {
@@ -437,7 +704,7 @@
       }
     },
     {
-      "id": 6,
+      "id": 7,
       "type": {
         "def": {
           "variant": {
@@ -445,7 +712,7 @@
               {
                 "fields": [
                   {
-                    "type": 7
+                    "type": 8
                   }
                 ],
                 "index": 0,
@@ -454,7 +721,7 @@
               {
                 "fields": [
                   {
-                    "type": 8
+                    "type": 9
                   }
                 ],
                 "index": 1,
@@ -466,11 +733,11 @@
         "params": [
           {
             "name": "T",
-            "type": 7
+            "type": 8
           },
           {
             "name": "E",
-            "type": 8
+            "type": 9
           }
         ],
         "path": [
@@ -479,7 +746,7 @@
       }
     },
     {
-      "id": 7,
+      "id": 8,
       "type": {
         "def": {
           "tuple": []
@@ -487,7 +754,7 @@
       }
     },
     {
-      "id": 8,
+      "id": 9,
       "type": {
         "def": {
           "variant": {
@@ -506,7 +773,7 @@
       }
     },
     {
-      "id": 9,
+      "id": 10,
       "type": {
         "def": {
           "primitive": "u32"
@@ -514,7 +781,7 @@
       }
     },
     {
-      "id": 10,
+      "id": 11,
       "type": {
         "def": {
           "variant": {
@@ -522,7 +789,7 @@
               {
                 "fields": [
                   {
-                    "type": 11
+                    "type": 12
                   }
                 ],
                 "index": 0,
@@ -531,7 +798,7 @@
               {
                 "fields": [
                   {
-                    "type": 8
+                    "type": 9
                   }
                 ],
                 "index": 1,
@@ -543,11 +810,11 @@
         "params": [
           {
             "name": "T",
-            "type": 11
+            "type": 12
           },
           {
             "name": "E",
-            "type": 8
+            "type": 9
           }
         ],
         "path": [
@@ -556,7 +823,7 @@
       }
     },
     {
-      "id": 11,
+      "id": 12,
       "type": {
         "def": {
           "primitive": "bool"
@@ -564,7 +831,7 @@
       }
     },
     {
-      "id": 12,
+      "id": 13,
       "type": {
         "def": {
           "variant": {
@@ -572,7 +839,7 @@
               {
                 "fields": [
                   {
-                    "type": 13
+                    "type": 14
                   }
                 ],
                 "index": 0,
@@ -581,7 +848,7 @@
               {
                 "fields": [
                   {
-                    "type": 8
+                    "type": 9
                   }
                 ],
                 "index": 1,
@@ -593,11 +860,11 @@
         "params": [
           {
             "name": "T",
-            "type": 13
+            "type": 14
           },
           {
             "name": "E",
-            "type": 8
+            "type": 9
           }
         ],
         "path": [
@@ -606,7 +873,7 @@
       }
     },
     {
-      "id": 13,
+      "id": 14,
       "type": {
         "def": {
           "variant": {
@@ -618,7 +885,7 @@
               {
                 "fields": [
                   {
-                    "type": 14
+                    "type": 15
                   }
                 ],
                 "index": 1,
@@ -630,7 +897,7 @@
         "params": [
           {
             "name": "T",
-            "type": 14
+            "type": 15
           }
         ],
         "path": [
@@ -639,7 +906,7 @@
       }
     },
     {
-      "id": 14,
+      "id": 15,
       "type": {
         "def": {
           "composite": {
