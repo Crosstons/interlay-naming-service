@@ -45,6 +45,7 @@ pub mod naming_service {
     )]
     pub struct DomainInfo {
         owner: AccountId,
+        image: Vec<u8>,
         expiration: Timestamp,
     }
     
@@ -120,7 +121,7 @@ pub mod naming_service {
         }
 
         #[ink(message, payable)]
-        pub fn register_domain(&mut self, name: Vec<u8>, suffix_idx: u32, days: u64) -> bool {
+        pub fn register_domain(&mut self, name: Vec<u8>, suffix_idx: u32, days: u64, image: Vec<u8>) -> bool {
             let base = 100000000;
             if suffix_idx >= self.suffixes.len() as u32 {
                 return false;
@@ -152,7 +153,8 @@ pub mod naming_service {
             self.domains.insert(
                 full_name.clone(),
                 &DomainInfo {
-                    owner: caller,
+                    owner : caller,
+                    image,
                     expiration,
                 },
             );  
@@ -188,7 +190,7 @@ pub mod naming_service {
 	    if let Some(mut domain_info) = self.domains.take(&name) {
                 if domain_info.owner == self.env().caller() {                  
                     domain_info.expiration += (days * 86_400_000);                   
-                    self.domains.insert(name, &domain_info); // Update the value   
+                    self.domains.insert(name, &domain_info); 
                     return true;
                 }
                 
@@ -279,7 +281,7 @@ pub mod naming_service {
             if let Some(mut auction) = self.auctions.take(&name) {
                 let current_time = self.env().block_timestamp();
                 if auction.end_time > current_time && value > auction.highest_bid {
-                    // Refund the previous highest bidder
+                
                     if auction.highest_bid > 0 {
                         if let Err(_) = self.env().transfer(auction.highest_bidder, auction.highest_bid) {
                             return false;
@@ -305,31 +307,41 @@ pub mod naming_service {
             if let Some(auction) = self.auctions.take(&name) {
                 let current_time = self.env().block_timestamp();
                 if auction.end_time < current_time {
-                    // Transfer domain ownership
+
                     if let Some(mut domain_info) = self.domains.take(&name) {
                         domain_info.owner = auction.highest_bidder;
                         self.domains.insert(name.clone(), &domain_info);
                     }
 
-                    // Transfer winning bid amount to the seller
                     if let Err(_) = self.env().transfer(auction.seller, auction.highest_bid) {
                         return false;
                     }
 
-                    // Emit the AuctionEnded event
                     self.env().emit_event(AuctionEnded {
                         name: name.clone(),
                         winner: auction.highest_bidder,
                         winning_bid: auction.highest_bid,
                     });
 
-                    // Remove the auction
                     self.auctions.remove(&name);
                     return true;
                 }
             }
             false
         }
+        
+	#[ink(message)]
+	pub fn update_image(&mut self, name: Vec<u8>, new_image: Vec<u8>) -> bool {
+	    if let Some(mut domain_info) = self.domains.take(&name) {
+		let caller = self.env().caller();
+		if domain_info.owner == caller {
+		    domain_info.image = new_image;
+		    self.domains.insert(name, &domain_info);
+		    return true;
+		}
+	    }
+	    false
+	}
         
         pub fn is_valid_domain_name(name: &[u8]) -> bool {
             let max_length: usize = 25;
