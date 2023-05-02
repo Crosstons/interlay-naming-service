@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x82ba4badcc374980a89e266ff3ec5cf9254024b3bd40e32d7482a507dbd149ff",
+    "hash": "0xf322d1c6b8f56898312ff14a45f9e6b32dd895ce93545fdb04783f1efe41691f",
     "language": "ink! 4.1.0",
     "compiler": "rustc 1.66.0",
     "build_info": {
@@ -59,7 +59,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 6
+              "type": 3
             }
           },
           {
@@ -87,7 +87,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 6
+              "type": 3
             }
           }
         ],
@@ -104,7 +104,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 6
+              "type": 3
             }
           },
           {
@@ -143,7 +143,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 6
+              "type": 3
             }
           },
           {
@@ -154,7 +154,7 @@
               "displayName": [
                 "Timestamp"
               ],
-              "type": 3
+              "type": 4
             }
           }
         ],
@@ -171,7 +171,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 6
+              "type": 3
             }
           },
           {
@@ -193,7 +193,7 @@
               "displayName": [
                 "Balance"
               ],
-              "type": 4
+              "type": 5
             }
           }
         ],
@@ -210,7 +210,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 6
+              "type": 3
             }
           },
           {
@@ -232,7 +232,7 @@
               "displayName": [
                 "Balance"
               ],
-              "type": 4
+              "type": 5
             }
           }
         ],
@@ -256,7 +256,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 6
+              "type": 3
             }
           },
           {
@@ -273,6 +273,15 @@
             "type": {
               "displayName": [
                 "u64"
+              ],
+              "type": 4
+            }
+          },
+          {
+            "label": "image",
+            "type": {
+              "displayName": [
+                "Vec"
               ],
               "type": 3
             }
@@ -299,7 +308,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 6
+              "type": 3
             }
           },
           {
@@ -308,7 +317,7 @@
               "displayName": [
                 "u64"
               ],
-              "type": 3
+              "type": 4
             }
           }
         ],
@@ -333,7 +342,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 6
+              "type": 3
             }
           },
           {
@@ -367,7 +376,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 6
+              "type": 3
             }
           }
         ],
@@ -392,7 +401,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 6
+              "type": 3
             }
           }
         ],
@@ -417,7 +426,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 6
+              "type": 3
             }
           },
           {
@@ -426,7 +435,7 @@
               "displayName": [
                 "Timestamp"
               ],
-              "type": 3
+              "type": 4
             }
           },
           {
@@ -435,7 +444,16 @@
               "displayName": [
                 "Balance"
               ],
-              "type": 4
+              "type": 5
+            }
+          },
+          {
+            "label": "tick_price",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 5
             }
           }
         ],
@@ -460,7 +478,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 6
+              "type": 3
             }
           }
         ],
@@ -485,7 +503,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 6
+              "type": 3
             }
           }
         ],
@@ -501,6 +519,40 @@
           "type": 11
         },
         "selector": "0x28dd27b4"
+      },
+      {
+        "args": [
+          {
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 3
+            }
+          },
+          {
+            "label": "new_image",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "docs": [],
+        "label": "update_image",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 11
+        },
+        "selector": "0x468b23d1"
       }
     ]
   },
@@ -529,6 +581,15 @@
                             "leaf": {
                               "key": "0xdc97da32",
                               "ty": 3
+                            }
+                          },
+                          "name": "image"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0xdc97da32",
+                              "ty": 4
                             }
                           },
                           "name": "expiration"
@@ -570,7 +631,7 @@
                           "layout": {
                             "leaf": {
                               "key": "0x9892894c",
-                              "ty": 4
+                              "ty": 5
                             }
                           },
                           "name": "highest_bid"
@@ -579,7 +640,7 @@
                           "layout": {
                             "leaf": {
                               "key": "0x9892894c",
-                              "ty": 4
+                              "ty": 5
                             }
                           },
                           "name": "starting_bid"
@@ -588,7 +649,16 @@
                           "layout": {
                             "leaf": {
                               "key": "0x9892894c",
-                              "ty": 3
+                              "ty": 5
+                            }
+                          },
+                          "name": "tick_price"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x9892894c",
+                              "ty": 4
                             }
                           },
                           "name": "end_time"
@@ -606,7 +676,7 @@
               "layout": {
                 "leaf": {
                   "key": "0x00000000",
-                  "ty": 5
+                  "ty": 6
                 }
               },
               "name": "suffixes"
@@ -671,7 +741,9 @@
       "id": 3,
       "type": {
         "def": {
-          "primitive": "u64"
+          "sequence": {
+            "type": 2
+          }
         }
       }
     },
@@ -679,7 +751,7 @@
       "id": 4,
       "type": {
         "def": {
-          "primitive": "u128"
+          "primitive": "u64"
         }
       }
     },
@@ -687,9 +759,7 @@
       "id": 5,
       "type": {
         "def": {
-          "sequence": {
-            "type": 6
-          }
+          "primitive": "u128"
         }
       }
     },
@@ -698,7 +768,7 @@
       "type": {
         "def": {
           "sequence": {
-            "type": 2
+            "type": 3
           }
         }
       }
@@ -917,8 +987,13 @@
                 "typeName": "AccountId"
               },
               {
-                "name": "expiration",
+                "name": "image",
                 "type": 3,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "expiration",
+                "type": 4,
                 "typeName": "Timestamp"
               }
             ]
