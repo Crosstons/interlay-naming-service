@@ -66,6 +66,7 @@ pub mod naming_service {
         highest_bid: Balance,
         starting_bid: Balance,
         tick_price: Balance,
+        buyout_price: Balance,
         end_time: Timestamp,
     }
 
@@ -247,7 +248,7 @@ pub mod naming_service {
         }
         
 	#[ink(message, payable)]
-	pub fn create_auction(&mut self, name: Vec<u8>, duration: Timestamp, starting_bid: Balance, tick_price: Balance) -> bool {
+	pub fn create_auction(&mut self, name: Vec<u8>, duration: Timestamp, starting_bid: Balance, tick_price: Balance, buyout_price: Balance) -> bool {
 
 	    if self.auctions.contains(&name) {
 		return false;
@@ -266,6 +267,7 @@ pub mod naming_service {
 		            highest_bid: starting_bid,
 		            starting_bid: starting_bid,
 		            tick_price: tick_price,
+		            buyout_price: buyout_price,
 		            end_time,
 		        },
 		    );
@@ -288,6 +290,10 @@ pub mod naming_service {
                         if let Err(_) = self.env().transfer(auction.highest_bidder, auction.highest_bid) {
                             return false;
                         }
+                    }
+                    
+                    if value >= auction.buyout_price {
+                    	auction.end_time = current_time
                     }
 
                     auction.highest_bidder = caller;

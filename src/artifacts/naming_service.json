@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0xf322d1c6b8f56898312ff14a45f9e6b32dd895ce93545fdb04783f1efe41691f",
+    "hash": "0x8b060777ad4f34b0c2177abe87fbc7e697439b826be151ef86108ae4af4e9de5",
     "language": "ink! 4.1.0",
     "compiler": "rustc 1.66.0",
     "build_info": {
@@ -455,6 +455,15 @@
               ],
               "type": 5
             }
+          },
+          {
+            "label": "buyout_price",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 5
+            }
           }
         ],
         "docs": [],
@@ -653,6 +662,15 @@
                             }
                           },
                           "name": "tick_price"
+                        },
+                        {
+                          "layout": {
+                            "leaf": {
+                              "key": "0x9892894c",
+                              "ty": 5
+                            }
+                          },
+                          "name": "buyout_price"
                         },
                         {
                           "layout": {
