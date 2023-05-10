@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 const HeroSection = () => {
   const [search, setSearch] = useState('');
   const [typedText, setTypedText] = useState('');
-  const headingText = 'Interlay Naming Service';
+  const headingText = 'Kintsugi Naming Service';
 
   useEffect(() => {
     let typingTimer;
