@@ -1,12 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useEffect } from "react";
+import { web3Enable, web3Accounts } from "@polkadot/extension-dapp";
+import { ApiContext } from '../context/ApiContext.tsx';
+
 const Navbar = () => {
+    
+    const { api, apiReady } = useContext(ApiContext);
     const [isOpen, setIsOpen] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
+    const [account, setAccount] = useState('');
+    const [connected, setConnected] = useState(false);
   
     const toggleDropdown = () => {
       setIsOpen(!isOpen);
     };
+
+    const onConnect = async () => {
+      const extensions = await web3Enable('KNS');
+      if(extensions && (!api || !apiReady)) {
+        api.setSigner(extensions[0].signer)
+        const injectedAccounts = await web3Accounts()
+        console.log(injectedAccounts[0].address);
+        setAccount(injectedAccounts[0].address);
+        setConnected(true);
+      }
+    }
   
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -34,40 +52,8 @@ const Navbar = () => {
         <div className="flex items-center">
           {/* Links */}
           <div className="hidden md:flex items-center space-x-4 font-mono">
-            <a href="#" className="text-gray-300 transition duration-300 ease-in-out hover:text-blue-500">
-              Link 1
-            </a>
-            <a href="#" className="text-gray-300 transition duration-300 ease-in-out hover:text-blue-500">
-              Link 2
-            </a>
 
             {/* Dropdown */}
-            <div className="relative">
-              <button onClick={toggleDropdown} className="text-gray-300 transition duration-300 ease-in-out hover:text-blue-500">
-                Dropdown
-              </button>
-              {isOpen && (
-                <div className="absolute left-0 mt-2 w-48 bg-gray-800 border border-gray-700 rounded shadow-md">
-                  <ul className="text-gray-300">
-                    <li>
-                      <a href="#" className="block px-4 py-2 transition duration-300 ease-in-out hover:bg-gray-700">
-                        Option 1
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="block px-4 py-2 transition duration-300 ease-in-out hover:bg-gray-700">
-                        Option 2
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="block px-4 py-2 transition duration-300 ease-in-out hover:bg-gray-700">
-                        Option 3
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
             {/* Search bar */}
 {showSearch && (
   <form className="hidden md:flex w-1/3">
@@ -84,12 +70,9 @@ const Navbar = () => {
 
           </div>
 
-          {/* Divider */}
-          <div className="mx-4 border-l-2 border-gray-700 h-5"></div>
-
           {/* Button */}
-          <button className="rounded-md bg-blue-500 text-white px-4 py-2 font-mono transition duration-300 ease-in-out hover:bg-blue-600">
-            Button
+          <button onClick={onConnect} className="rounded-md bg-blue-500 text-white px-4 py-2 font-mono transition duration-300 ease-in-out hover:bg-blue-600">
+            { connected ? account : "Connect"}
           </button>
         </div>
       </div>

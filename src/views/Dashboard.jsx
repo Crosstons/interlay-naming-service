@@ -3,7 +3,7 @@ import {
   isWeb3Injected,
   web3Accounts,
   web3FromSource
-} from '@polkadot/extension-dapp'
+} from '@polkadot/extension-dapp';
 import { ApiPromise, Keyring } from '@polkadot/api'
 import { Abi, ContractPromise } from '@polkadot/api-contract'
 import React,{ useEffect, useState, useContext } from 'react'
@@ -12,6 +12,7 @@ import DomainBlock from '../components2/DomainBlock';
 import DetailsTab from '../components2/DetailsTab';
 import ABI from '../artifacts/naming_service.json';
 import { ApiContext } from '../context/ApiContext.tsx';
+import { useParams } from 'react-router-dom';
 
 const handleSearchSubmit = (searchValue) => {
   console.log('Search:', searchValue);
@@ -20,6 +21,8 @@ const handleSearchSubmit = (searchValue) => {
 const address = 'Z9jLENBXPWo44DjgHYrdhgni4N6nmDRaN8xHkbixepRfEnA';
 
 function Dashboard() {
+
+  const { name } = useParams();
 
   const { api, apiReady } = useContext(ApiContext);
   const [accounts, setAccounts] = useState([]);
@@ -50,8 +53,6 @@ function Dashboard() {
     }
     const abi = new Abi(ABI, api.registry.getChainProperties())
     const contract = new ContractPromise(api, abi, address)
-    console.log(injectedAccounts);
-    console.log(contract);
     setContract(contract)
   }
 
@@ -65,7 +66,7 @@ function Dashboard() {
     <div className="bg-gray-800 h-screen">
       <FixedSearchBar onSubmit={handleSearchSubmit} account={account.address} />
       <div className="container mx-auto pt-40">
-        <DomainBlock onSubmit={handleSearchSubmit} />
+        <DomainBlock account={account} contract={contract} name={name} />
       </div>
     </div>
   )

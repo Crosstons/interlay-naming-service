@@ -1,14 +1,100 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import {
+  web3Enable,
+  isWeb3Injected,
+  web3Accounts,
+  web3FromSource
+} from '@polkadot/extension-dapp'
+import { ApiPromise, Keyring } from '@polkadot/api'
+import { Abi, ContractPromise } from '@polkadot/api-contract'
+import ABI from '../artifacts/naming_service.json';
 import { FiCopy } from 'react-icons/fi';
 import { BounceLoader } from 'react-spinners';
 import RegisterTab from './RegisterTab';
 import DetailsTab from './DetailsTab';
 import SubdomainsTab from './SubdomainsTab';
 import AuctionTab from './AuctionTab'; // Import the new AuctionTab component
+import { ApiContext } from '../context/ApiContext.tsx';
 
-const DomainInfo = () => {
+const address = 'Z9jLENBXPWo44DjgHYrdhgni4N6nmDRaN8xHkbixepRfEnA';
+
+const DomainInfo = ({name}) => {
+
+  const { api, apiReady } = useContext(ApiContext);
   const [activeTab, setActiveTab] = useState('register');
   const [isLoading, setIsLoading] = useState(false);
+  const [accounts, setAccounts] = useState([]);
+  const [account, setAccount] = useState({address : ""});
+  const [contract, setContract] = useState();
+  const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+
+  const connectWalletHandler = async () => {
+    setError('')
+    setSuccessMsg('')
+    if (!api || !apiReady) {
+      setError('The API is not ready')
+      return
+    }
+    const extensions = await web3Enable('KNS')
+    /* check if wallet is installed */
+    if (extensions.length === 0) {
+      setError('The user does not have any Substrate wallet installed')
+      return
+    }
+    // set the first wallet as the signer (we assume there is only one wallet)
+    api.setSigner(extensions[0].signer)
+    const injectedAccounts = await web3Accounts()
+    if (injectedAccounts.length > 0) {
+      setAccounts(injectedAccounts);
+      setAccount(injectedAccounts[0]);
+    }
+    const abi = new Abi(ABI, api.registry.getChainProperties())
+    const contract = new ContractPromise(api, abi, address)
+    setContract(contract)
+    console.log(contract);
+  }
+
+  const getGasLimit = (api) =>
+  api.registry.createType(
+    'WeightV2',
+    api.consts.system.blockWeights['maxBlock']
+  )
+
+  const getDomainInfo = async () => {
+    if (!api || !apiReady) {
+      setError('The API is not ready')
+      return
+    }
+
+    if (!account) {
+      setError('Account not initialized')
+      return
+    }
+
+    if (!contract) {
+      setError('Contract not initialized')
+      return
+    }
+
+    const gasLimit = getGasLimit(api)
+
+    const { gasRequired, result, output } = await contract.query.getDomainInfo(
+      account.address,
+      {
+        gasLimit,
+      },
+      "monu.kbtc"
+    )
+    console.log('gasRequired', gasRequired.toString())
+    console.log('result', result.toHuman())
+    console.log('output', output?.toHuman())
+
+    if (result.isErr) {
+      setError(result.asErr.toString())
+      return
+    }
+  }
 
   const handleTabClick = (tabName) => {
     setIsLoading(true);
@@ -31,6 +117,13 @@ const DomainInfo = () => {
   };
 
   useEffect(() => {
+    (async () => {
+      await connectWalletHandler();
+      await getDomainInfo();
+    })();
+  }, []);
+
+  useEffect(() => {
     if (isLoading) {
       setTimeout(() => {
         setIsLoading(false);
@@ -43,9 +136,9 @@ const DomainInfo = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center pt-4">
           {/* Domain Name */}
-          <div className="flex-shrink-0">
-            <h2 className="text-4xl font-bold">vrjdesai.eth</h2>
-          </div>
+          <button className="flex-shrink-0">
+            <h2 className="text-4xl font-bold">{name}</h2>
+          </button>
           {/* Copy Icon */}
           <div className="ml-2">
             <button

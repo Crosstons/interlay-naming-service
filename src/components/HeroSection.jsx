@@ -23,6 +23,7 @@ const HeroSection = () => {
     e.preventDefault();
     // Perform search logic here
     console.log('Search:', search);
+    window.location.href = `/home/${search}`;
   };
 
   return (
@@ -56,13 +57,9 @@ const HeroSection = () => {
           </form>
           {/* Domain suggestions */}
           <div className="flex space-x-4 text-center mb-8 font-poppins">
-            <span>.crypto</span>
+            <span>.kbtc</span>
             <span className="italic">/</span>
-            <span>.nft</span>
-            <span className="italic">/</span>
-            <span>.polkadot</span>
-            <span className="italic">/</span>
-            <span>.blockchain</span>
+            <span>.kint</span>
           </div>
         </div>
       </div>
