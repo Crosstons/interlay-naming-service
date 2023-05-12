@@ -1,17 +1,69 @@
-import React from 'react'
+import {
+  web3Enable,
+  isWeb3Injected,
+  web3Accounts,
+  web3FromSource
+} from '@polkadot/extension-dapp'
+import { ApiPromise, Keyring } from '@polkadot/api'
+import { Abi, ContractPromise } from '@polkadot/api-contract'
+import React,{ useEffect, useState, useContext } from 'react'
 import FixedSearchBar from '../components2/FixedSearchBar';
 import DomainBlock from '../components2/DomainBlock';
 import DetailsTab from '../components2/DetailsTab';
+import ABI from '../artifacts/naming_service.json';
+import { ApiContext } from '../context/ApiContext.tsx';
 
-    const handleSearchSubmit = (searchValue) => {
-      console.log('Search:', searchValue);
-        };
+const handleSearchSubmit = (searchValue) => {
+  console.log('Search:', searchValue);
+};
 
+const address = 'Z9jLENBXPWo44DjgHYrdhgni4N6nmDRaN8xHkbixepRfEnA';
 
 function Dashboard() {
+
+  const { api, apiReady } = useContext(ApiContext);
+  const [accounts, setAccounts] = useState([]);
+  const [account, setAccount] = useState({address : ""});
+  const [contract, setContract] = useState();
+  const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+
+  const connectWalletHandler = async () => {
+    setError('')
+    setSuccessMsg('')
+    if (!api || !apiReady) {
+      setError('The API is not ready')
+      return
+    }
+    const extensions = await web3Enable('KNS')
+    /* check if wallet is installed */
+    if (extensions.length === 0) {
+      setError('The user does not have any Substrate wallet installed')
+      return
+    }
+    // set the first wallet as the signer (we assume there is only one wallet)
+    api.setSigner(extensions[0].signer)
+    const injectedAccounts = await web3Accounts()
+    if (injectedAccounts.length > 0) {
+      setAccounts(injectedAccounts);
+      setAccount(injectedAccounts[0]);
+    }
+    const abi = new Abi(ABI, api.registry.getChainProperties())
+    const contract = new ContractPromise(api, abi, address)
+    console.log(injectedAccounts);
+    console.log(contract);
+    setContract(contract)
+  }
+
+  useEffect(() => {
+    (async () => {
+      await connectWalletHandler();
+    })();
+  }, []);
+
   return (
     <div className="bg-gray-800 h-screen">
-      <FixedSearchBar onSubmit={handleSearchSubmit} />
+      <FixedSearchBar onSubmit={handleSearchSubmit} account={account.address} />
       <div className="container mx-auto pt-40">
         <DomainBlock onSubmit={handleSearchSubmit} />
       </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const FixedSearchBar = ({ onSubmit }) => {
+const FixedSearchBar = ({ onSubmit, account }) => {
   const [search, setSearch] = useState('');
 
   const handleSubmit = (e) => {
@@ -39,8 +39,8 @@ const FixedSearchBar = ({ onSubmit }) => {
           </form>
 
           {/* Button on the right side */}
-          <button className="ml-16 px-6 py-3 poppins bg-blue-500 text-white font-bold rounded-lg transition duration-300 ease-in-out hover:bg-blue-600">
-            Click me
+          <button className="ml-16 px-6 py-3 poppins bg-blue-500 text-white font-bold rounded-lg transition duration-300 ease-in-out hover:bg-blue-600" disabled>
+            {account}
           </button>
         </div>
       </div>
