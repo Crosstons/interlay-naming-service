@@ -350,6 +350,11 @@ pub mod naming_service {
 	    }
 	    false
 	}
+	
+        #[ink(message)]
+        pub fn get_auction_info(&self, name: Vec<u8>) -> Option<Auction> {
+            self.auctions.get(name)
+        }
         
         pub fn is_valid_domain_name(name: &[u8]) -> bool {
             let max_length: usize = 25;

@@ -1,6 +1,6 @@
 {
   "source": {
-    "hash": "0x8b060777ad4f34b0c2177abe87fbc7e697439b826be151ef86108ae4af4e9de5",
+    "hash": "0xaa3811a1c862da303458b777826e67f894e2c0f0fd55afae25e4ef327dafad88",
     "language": "ink! 4.1.0",
     "compiler": "rustc 1.66.0",
     "build_info": {
@@ -562,6 +562,31 @@
           "type": 11
         },
         "selector": "0x468b23d1"
+      },
+      {
+        "args": [
+          {
+            "label": "name",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "docs": [],
+        "label": "get_auction_info",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0xace82319"
       }
     ]
   },
@@ -1021,6 +1046,132 @@
           "naming_service",
           "naming_service",
           "DomainInfo"
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 17
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 9
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 17
+          },
+          {
+            "name": "E",
+            "type": 9
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 17,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 18
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 18
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "seller",
+                "type": 0,
+                "typeName": "AccountId"
+              },
+              {
+                "name": "highest_bidder",
+                "type": 0,
+                "typeName": "AccountId"
+              },
+              {
+                "name": "highest_bid",
+                "type": 5,
+                "typeName": "Balance"
+              },
+              {
+                "name": "starting_bid",
+                "type": 5,
+                "typeName": "Balance"
+              },
+              {
+                "name": "tick_price",
+                "type": 5,
+                "typeName": "Balance"
+              },
+              {
+                "name": "buyout_price",
+                "type": 5,
+                "typeName": "Balance"
+              },
+              {
+                "name": "end_time",
+                "type": 4,
+                "typeName": "Timestamp"
+              }
+            ]
+          }
+        },
+        "path": [
+          "naming_service",
+          "naming_service",
+          "Auction"
         ]
       }
     }
