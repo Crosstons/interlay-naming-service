@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   web3Enable,
   isWeb3Injected,
@@ -14,13 +14,15 @@ import RegisterTab from './RegisterTab';
 import DetailsTab from './DetailsTab';
 import SubdomainsTab from './SubdomainsTab';
 import AuctionTab from './AuctionTab'; // Import the new AuctionTab component
-import { ApiContext } from '../context/ApiContext.tsx';
+import { WsProvider } from '@polkadot/api';
 
 const address = 'Z9jLENBXPWo44DjgHYrdhgni4N6nmDRaN8xHkbixepRfEnA';
 
 const DomainInfo = ({name}) => {
 
-  const { api, apiReady } = useContext(ApiContext);
+  const [api, setApi] = useState();
+  const [apiReady, setApiReady] = useState(false);
+  const [tabs, setTabs] = useState(['']);
   const [activeTab, setActiveTab] = useState('register');
   const [isLoading, setIsLoading] = useState(false);
   const [accounts, setAccounts] = useState([]);
@@ -28,11 +30,12 @@ const DomainInfo = ({name}) => {
   const [contract, setContract] = useState();
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [loaded, setLoaded] = useState(false);
 
-  const connectWalletHandler = async () => {
+  const connectWalletHandler = async (_api, _apiReady) => {
     setError('')
     setSuccessMsg('')
-    if (!api || !apiReady) {
+    if (!_api || !_apiReady) {
       setError('The API is not ready')
       return
     }
@@ -43,16 +46,17 @@ const DomainInfo = ({name}) => {
       return
     }
     // set the first wallet as the signer (we assume there is only one wallet)
-    api.setSigner(extensions[0].signer)
+    _api.setSigner(extensions[0].signer)
     const injectedAccounts = await web3Accounts()
     if (injectedAccounts.length > 0) {
       setAccounts(injectedAccounts);
       setAccount(injectedAccounts[0]);
     }
-    const abi = new Abi(ABI, api.registry.getChainProperties())
-    const contract = new ContractPromise(api, abi, address)
+    const abi = new Abi(ABI, _api.registry.getChainProperties())
+    const contract = new ContractPromise(_api, abi, address)
     setContract(contract)
     console.log(contract);
+    return [api, apiReady, injectedAccounts[0], contract]
   }
 
   const getGasLimit = (api) =>
@@ -61,39 +65,38 @@ const DomainInfo = ({name}) => {
     api.consts.system.blockWeights['maxBlock']
   )
 
-  const getDomainInfo = async () => {
-    if (!api || !apiReady) {
+  const getDomainInfo = async (_api, _apiReady, _account, _contract) => {
+    if (!_api || !_apiReady) {
       setError('The API is not ready')
       return
     }
 
-    if (!account) {
+    if (!_account) {
       setError('Account not initialized')
       return
     }
 
-    if (!contract) {
+    if (!_contract) {
       setError('Contract not initialized')
       return
     }
 
-    const gasLimit = getGasLimit(api)
+    const gasLimit = getGasLimit(_api)
 
-    const { gasRequired, result, output } = await contract.query.getDomainInfo(
-      account.address,
+    const { gasRequired, result, output } = await _contract.query.getDomainInfo(
+      _account.address,
       {
         gasLimit,
       },
-      "monu.kbtc"
+      name
     )
-    console.log('gasRequired', gasRequired.toString())
-    console.log('result', result.toHuman())
-    console.log('output', output?.toHuman())
 
     if (result.isErr) {
       setError(result.asErr.toString())
       return
     }
+
+    return [gasRequired.toString(), result.toHuman().Ok, output?.toHuman().Ok]
   }
 
   const handleTabClick = (tabName) => {
@@ -118,8 +121,19 @@ const DomainInfo = ({name}) => {
 
   useEffect(() => {
     (async () => {
-      await connectWalletHandler();
-      await getDomainInfo();
+      const provider = new WsProvider('wss://rpc.shibuya.astar.network');
+      let temp = new ApiPromise({ provider });
+      setApi(temp);
+      await temp.isReady;
+      setApiReady(true);
+      const res = await connectWalletHandler(temp, true);
+      const res2 = await getDomainInfo(temp, true, res[2], res[3]);
+      if(res2[2] != null) {
+        setTabs(['details', 'auction']);
+        setActiveTab('details')
+      } else { setTabs(['register']) }
+      setLoaded(true);
+      console.log(res2[2]);
     })();
   }, []);
 
@@ -150,10 +164,10 @@ const DomainInfo = ({name}) => {
               <FiCopy />
             </button>
           </div>
-          {/* Tabs */}
+          { loaded ? 
           <div className="flex-grow">
             <ul className="flex justify-end space-x-1">
-              {['register', 'details', 'subdomains', 'auction'].map((tab, index) => (
+              {tabs.map((tab, index) => (
                 <li key={index} className="relative">
                   {index !== 0 && (
                     <div className="absolute inset-y-0 left-0 w-px bg-white opacity-30" />
@@ -174,6 +188,7 @@ const DomainInfo = ({name}) => {
               ))}
             </ul>
           </div>
+          : "" }
         </div>
         {/* Tab content */}
         <div className="mt-8">

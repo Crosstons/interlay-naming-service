@@ -14,10 +14,6 @@ import ABI from '../artifacts/naming_service.json';
 import { ApiContext } from '../context/ApiContext.tsx';
 import { useParams } from 'react-router-dom';
 
-const handleSearchSubmit = (searchValue) => {
-  console.log('Search:', searchValue);
-};
-
 const address = 'Z9jLENBXPWo44DjgHYrdhgni4N6nmDRaN8xHkbixepRfEnA';
 
 function Dashboard() {
@@ -26,7 +22,8 @@ function Dashboard() {
 
   const { api, apiReady } = useContext(ApiContext);
   const [accounts, setAccounts] = useState([]);
-  const [account, setAccount] = useState({address : ""});
+  const [account, setAccount] = useState({address : "Connect"});
+  const [loaded, setLoaded] = useState(false);
   const [contract, setContract] = useState();
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
@@ -59,12 +56,16 @@ function Dashboard() {
   useEffect(() => {
     (async () => {
       await connectWalletHandler();
+      setLoaded(true);
     })();
   }, []);
 
   return (
     <div className="bg-gray-800 h-screen">
-      <FixedSearchBar onSubmit={handleSearchSubmit} account={account.address} />
+      { loaded ? 
+        <FixedSearchBar account={account} />
+      :  "" }
+      
       <div className="container mx-auto pt-40">
         <DomainBlock account={account} contract={contract} name={name} />
       </div>

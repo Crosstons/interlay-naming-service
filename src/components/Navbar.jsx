@@ -17,7 +17,7 @@ const Navbar = () => {
 
     const onConnect = async () => {
       const extensions = await web3Enable('KNS');
-      if(extensions && (!api || !apiReady)) {
+      if(extensions) {
         api.setSigner(extensions[0].signer)
         const injectedAccounts = await web3Accounts()
         console.log(injectedAccounts[0].address);
@@ -71,7 +71,7 @@ const Navbar = () => {
           </div>
 
           {/* Button */}
-          <button onClick={onConnect} className="rounded-md bg-blue-500 text-white px-4 py-2 font-mono transition duration-300 ease-in-out hover:bg-blue-600">
+          <button onClick={ connected ? () => {} : onConnect} className="rounded-md bg-blue-500 text-white px-4 py-2 font-mono transition duration-300 ease-in-out hover:bg-blue-600">
             { connected ? account : "Connect"}
           </button>
         </div>
