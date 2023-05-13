@@ -16,14 +16,14 @@ import SubdomainsTab from './SubdomainsTab';
 import AuctionTab from './AuctionTab'; // Import the new AuctionTab component
 import { WsProvider } from '@polkadot/api';
 
-const address = 'Z9jLENBXPWo44DjgHYrdhgni4N6nmDRaN8xHkbixepRfEnA';
+const address = 'bD5Bj1czhW6tsGaiAbzBbE8vh3BVUzhahPRGC6YeEPvfZzb';
 
 const DomainInfo = ({name}) => {
 
   const [api, setApi] = useState();
   const [apiReady, setApiReady] = useState(false);
   const [tabs, setTabs] = useState(['']);
-  const [activeTab, setActiveTab] = useState('register');
+  const [activeTab, setActiveTab] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [accounts, setAccounts] = useState([]);
   const [account, setAccount] = useState({address : ""});
@@ -55,7 +55,6 @@ const DomainInfo = ({name}) => {
     const abi = new Abi(ABI, _api.registry.getChainProperties())
     const contract = new ContractPromise(_api, abi, address)
     setContract(contract)
-    console.log(contract);
     return [api, apiReady, injectedAccounts[0], contract]
   }
 
@@ -107,7 +106,7 @@ const DomainInfo = ({name}) => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'register':
-        return <RegisterTab />;
+        return <RegisterTab name={name}/>;
       case 'details':
         return <DetailsTab />;
       case 'subdomains':
@@ -131,9 +130,8 @@ const DomainInfo = ({name}) => {
       if(res2[2] != null) {
         setTabs(['details', 'auction']);
         setActiveTab('details')
-      } else { setTabs(['register']) }
+      } else { setTabs(['register']); setActiveTab('register') }
       setLoaded(true);
-      console.log(res2[2]);
     })();
   }, []);
 

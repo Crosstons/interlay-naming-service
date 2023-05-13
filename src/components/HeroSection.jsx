@@ -21,10 +21,23 @@ const HeroSection = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    // Perform search logic here
-    console.log('Search:', search);
-    window.location.href = `/home/${search}`;
+    
+    // Validation for search
+    const isValidLength = search.length <= 28;
+    let sliced = search.slice(0, search.length-5);
+    console.log(sliced);
+    const isValidChar = /^[a-zA-Z0-9-]*$/.test(sliced);
+    const isValidSuffix = search.endsWith(".kbtc") || search.endsWith(".kint");
+  
+    if (isValidLength && isValidChar && isValidSuffix) {
+      console.log('Search:', search);
+      window.location.href = `/home/${search}`;
+    } else {
+      alert('Invalid input name!');
+      // You might want to add more specific error messages or handle the error differently
+    }
   };
+  
 
   return (
     <div className="bg-gray-800 text-white py-32">
@@ -57,6 +70,7 @@ const HeroSection = () => {
           </form>
           {/* Domain suggestions */}
           <div className="flex space-x-4 text-center mb-8 font-poppins">
+            <span>All names should end with</span>
             <span>.kbtc</span>
             <span className="italic">/</span>
             <span>.kint</span>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { WsProvider, ApiPromise } from '@polkadot/api';
 import { web3Accounts } from '@polkadot/extension-dapp';
 
-const FixedSearchBar = ({ account }) => {
+const FixedSearchBar = () => {
   const [address, setAddress] = useState('');
   const [loaded, setLoaded] = useState(false);
 
