@@ -20,7 +20,7 @@ const FixedSearchBar = ({ account }) => {
   return (
     <div className="fixed w-full bg-gray-800 p-4 z-50">
       <div className="container mx-auto">
-        <div className="flex items-center">
+        <div className="flex items-between">
           {/* Logo */}
           <div className="flex-shrink-0 mr-16">
             <img

@@ -8,6 +8,7 @@ import { ApiPromise, Keyring } from '@polkadot/api'
 import { Abi, ContractPromise } from '@polkadot/api-contract'
 import React,{ useEffect, useState, useContext } from 'react'
 import FixedSearchBar from '../components2/FixedSearchBar';
+import Navbar from '../components/Navbar';
 import DomainBlock from '../components2/DomainBlock';
 import DetailsTab from '../components2/DetailsTab';
 import ABI from '../artifacts/naming_service.json';
@@ -63,7 +64,7 @@ function Dashboard() {
   return (
     <div className="bg-gray-800 h-screen">
       { loaded ? 
-        <FixedSearchBar account={account} />
+        <Navbar account={account} />
       :  "" }
       
       <div className="container mx-auto pt-40">
