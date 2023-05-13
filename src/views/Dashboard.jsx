@@ -14,7 +14,7 @@ import ABI from '../artifacts/naming_service.json';
 import { ApiContext } from '../context/ApiContext.tsx';
 import { useParams } from 'react-router-dom';
 
-const address = 'Z9jLENBXPWo44DjgHYrdhgni4N6nmDRaN8xHkbixepRfEnA';
+const address = 'bD5Bj1czhW6tsGaiAbzBbE8vh3BVUzhahPRGC6YeEPvfZzb';
 
 function Dashboard() {
 
