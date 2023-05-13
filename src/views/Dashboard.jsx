@@ -62,7 +62,7 @@ function Dashboard() {
   }, []);
 
   return (
-    <div className="bg-gray-800 h-screen">
+    <div className="bg-gray-800 h-full">
       { loaded ? 
         <Navbar account={account} />
       :  "" }
