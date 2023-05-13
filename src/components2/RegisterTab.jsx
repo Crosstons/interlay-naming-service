@@ -7,10 +7,9 @@ import { Abi, ContractPromise } from '@polkadot/api-contract'
 
 const address = 'bD5Bj1czhW6tsGaiAbzBbE8vh3BVUzhahPRGC6YeEPvfZzb';
 const decimals = new BN('100000000000000')
-
 const RegisterTab = ({name}) => {
   const [duration, setDuration] = useState(1);
-  const [image, setImage] = useState("https://");
+  const [image, setImage] = useState("ipfs://");
   const [api, setApi] = useState();
   const [apiReady, setApiReady] = useState(false);
   const [signer, setSigner] = useState();
@@ -168,7 +167,9 @@ const RegisterTab = ({name}) => {
 </svg>
 
           </button>
+          
         </div>
+        
       </div>
       <div className="text-gray-400 text-sm">
         <p>Minimum duration: 1 day</p>
@@ -178,11 +179,31 @@ const RegisterTab = ({name}) => {
           type="number"
           className="block w-full px-4 py-3 rounded-lg bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none text-3xl text-gray-100 placeholder-transparent placeholder-opacity-50"
           placeholder="Amount"
-          min={0}
+          value={duration * 0.0000010}
+          readOnly
         />
         <div className="absolute inset-y-0 right-0 flex items-center">
           <span className="text-lg font-medium text-gray-500"></span>
         </div>
+      </div>
+      <div className="text-gray-400 text-sm">
+        <p>Price Payable</p>
+      </div>
+      <div className="relative">
+        <input
+          type="text"
+          className="block w-full px-4 py-3 rounded-lg bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none text-
+          3xl text-gray-100 placeholder-transparent placeholder-opacity-50"
+          placeholder="IPFS Image Link"
+          value={image}
+          onChange={event => setImage(event.target.value)}
+        />
+        <div className="absolute inset-y-0 right-0 flex items-center">
+          <span className="text-lg font-medium text-gray-500"></span>
+        </div>
+      </div>
+      <div className="text-gray-400 text-sm">
+        <p>Paste you IPFS Link</p>
       </div>
       <div className='block text-center'>
       <button onClick={handleRegister} type="button" class=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Register</button>

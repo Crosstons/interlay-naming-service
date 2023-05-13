@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FiCopy } from 'react-icons/fi';
 
 const AuctionTab = () => {
@@ -8,14 +8,16 @@ const AuctionTab = () => {
     { name: 'example3.eth', currentBid: 1000, wallet: '0xAbcD1234eFgh5678IjKl9mN0PQrStu12' },
   ];
 
+  const [showAuctionForm, setShowAuctionForm] = useState(false);
+
   const handlePlaceBid = (domain) => {
     // Handle placing a bid on the specified domain
     console.log(`Placing a bid on ${domain.name}`);
   };
 
   const handleGenerateNewAuction = () => {
-    // Handle generating a new auction
-    console.log('Generating a new auction');
+    // Toggle the visibility of the auction form
+    setShowAuctionForm(!showAuctionForm);
   };
 
   const handleCopyAddress = (address) => {
@@ -61,6 +63,34 @@ const AuctionTab = () => {
           Generate New Auction
         </button>
       </div>
+      {showAuctionForm && (
+        <form className="mt-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-400">Duration</label>
+            <input type="number" className="mt-1 block w-full py-2 px-3 border border-gray-600 rounded-md text-gray-100 bg-gray-700" />
+         
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-400">Starting Bid</label>
+            <input type="number" className="mt-1 block w-full py-2 px-3 border border-gray-600 rounded-md text-gray-100 bg-gray-700" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-400">Tick Price</label>
+            <input type="number" className="mt-1 block w-full py-2 px-3 border border-gray-600 rounded-md text-gray-100 bg-gray-700" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-400">Buy Out Price</label>
+            <input type="number" className="mt-1 block w-full py-2 px-3 border border-gray-600 rounded-md text-gray-100 bg-gray-700" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-400">Timestamp</label>
+            <input type="datetime-local" className="mt-1 block w-full py-2 px-3 border border-gray-600 rounded-md text-gray-100 bg-gray-700" />
+          </div>
+          <button type="submit" className="px-8 py-2 text-lg font-bold bg-blue-600 rounded hover:bg-blue-700 transition duration-300 mt-6">
+            Submit
+          </button>
+        </form>
+      )}
     </div>
   );
 };

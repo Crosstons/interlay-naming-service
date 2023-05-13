@@ -23,7 +23,7 @@ const DomainInfo = ({name}) => {
   const [api, setApi] = useState();
   const [apiReady, setApiReady] = useState(false);
   const [tabs, setTabs] = useState(['']);
-  const [activeTab, setActiveTab] = useState('register');
+  const [activeTab, setActiveTab] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [accounts, setAccounts] = useState([]);
   const [account, setAccount] = useState({address : ""});
@@ -130,7 +130,7 @@ const DomainInfo = ({name}) => {
       if(res2[2] != null) {
         setTabs(['details', 'auction']);
         setActiveTab('details')
-      } else { setTabs(['register']) }
+      } else { setTabs(['register']); setActiveTab('register') }
       setLoaded(true);
     })();
   }, []);
