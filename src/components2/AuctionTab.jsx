@@ -371,9 +371,9 @@ const AuctionTab = ({name}) => {
                   onClick={handlePlaceBid}
                 >
                  { loaded ? `Place Bid @ ${parseInt(auction.highestBid.replaceAll(',','')) + parseInt(auction.tickPrice.replaceAll(',',''))} ` : "Loading.." }
-                </button>
+                </button> <br />
                 <button
-                  className="px-4 py-1 text-base font-bold text-blue-600 bg-white rounded hover:bg-blue-600 hover:text-white transition duration-300"
+                  className="px-4 mt-2 py-1 text-base font-bold text-blue-600 bg-white rounded hover:bg-blue-600 hover:text-white transition duration-300"
                   onClick={handleBuyout}
                 >
                  { loaded ?  `Buyout @ ${auction.buyoutPrice.replaceAll(',','')}` : "Loading.." }
