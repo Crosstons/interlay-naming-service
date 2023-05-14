@@ -67,7 +67,6 @@ const DomainDetails = ({name}) => {
       setApi(temp);
       const res2 = await getDomainInfo(temp, true, res[0], res[1]);
       setDomain(res2[2]);
-      console.log(res2[2]);
       setLoaded(true);
     })();
   }, []);

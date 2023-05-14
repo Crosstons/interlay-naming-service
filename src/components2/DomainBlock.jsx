@@ -112,7 +112,7 @@ const DomainInfo = ({name}) => {
       case 'subdomains':
         return <SubdomainsTab />;
       case 'auction': // Add a new case for the 'auction' tab
-        return <AuctionTab />;
+        return <AuctionTab name={name}/>;
       default:
         return null;
     }
