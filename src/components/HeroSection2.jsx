@@ -1,5 +1,6 @@
 import React from 'react';
 import './HeroSection.css';
+import image from '../image.png';
 
 const HeroSection = () => {
   return (
@@ -12,14 +13,14 @@ const HeroSection = () => {
               <span className="text-blue-500">WEB3</span>
             </h1>
             <p className="text-lg poppins m-6 text-center">
-              Polkadot Naming Service enables you to claim a domain name for
+              Kintsugi Naming Service enables you to claim a domain name for
               your blockchain identity, which can be used for secure and
               seamless authentication across the decentralized web.
             </p>
           </div>
           <div className="w-1/2">
             <img
-              src="https://storage.googleapis.com/unstoppable-client-assets/images/landing/new/use_case_1.png" // Replace with the desired image URL
+              src={image} // Replace with the desired image URL
               alt="Hero Illustration"
               className="w-full h-auto"
             />
