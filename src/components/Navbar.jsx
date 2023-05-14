@@ -1,11 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import { web3Enable, web3Accounts } from "@polkadot/extension-dapp";
-import { ApiContext } from '../context/ApiContext.tsx';
+import { WsProvider, ApiPromise } from "@polkadot/api";
 
 const Navbar = () => {
     
-    const { api, apiReady } = useContext(ApiContext);
     const [isOpen, setIsOpen] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
     const [account, setAccount] = useState('');
@@ -15,10 +14,10 @@ const Navbar = () => {
       setIsOpen(!isOpen);
     };
 
-    const onConnect = async () => {
+    const onConnect = async (_api) => {
       const extensions = await web3Enable('KNS');
       if(extensions) {
-        api.setSigner(extensions[0].signer)
+        _api.setSigner(extensions[0].signer)
         const injectedAccounts = await web3Accounts()
         console.log(injectedAccounts[0].address);
         setAccount(injectedAccounts[0].address);
@@ -37,7 +36,10 @@ const Navbar = () => {
 
     useEffect(() => {
       (async () => {
-        await onConnect();
+        const provider = new WsProvider('wss://rpc.shibuya.astar.network');
+        let temp = new ApiPromise({ provider });
+        await temp.isReady;
+        await onConnect(temp);
       })();
     }, []);
   

@@ -4,15 +4,14 @@ import {
   web3Accounts,
   web3FromSource
 } from '@polkadot/extension-dapp';
-import { ApiPromise, Keyring } from '@polkadot/api'
+import { ApiPromise, Keyring, WsProvider } from '@polkadot/api'
 import { Abi, ContractPromise } from '@polkadot/api-contract'
-import React,{ useEffect, useState, useContext } from 'react'
+import React,{ useEffect, useState} from 'react'
 import FixedSearchBar from '../components2/FixedSearchBar';
 import Navbar from '../components/Navbar';
 import DomainBlock from '../components2/DomainBlock';
 import DetailsTab from '../components2/DetailsTab';
 import ABI from '../artifacts/naming_service.json';
-import { ApiContext } from '../context/ApiContext.tsx';
 import { useParams } from 'react-router-dom';
 
 const address = 'bD5Bj1czhW6tsGaiAbzBbE8vh3BVUzhahPRGC6YeEPvfZzb';
@@ -20,8 +19,6 @@ const address = 'bD5Bj1czhW6tsGaiAbzBbE8vh3BVUzhahPRGC6YeEPvfZzb';
 function Dashboard() {
 
   const { name } = useParams();
-
-  const { api, apiReady } = useContext(ApiContext);
   const [accounts, setAccounts] = useState([]);
   const [account, setAccount] = useState({address : "Connect"});
   const [loaded, setLoaded] = useState(false);
@@ -29,10 +26,10 @@ function Dashboard() {
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
-  const connectWalletHandler = async () => {
+  const connectWalletHandler = async (_api, _apiReady) => {
     setError('')
     setSuccessMsg('')
-    if (!api || !apiReady) {
+    if (!_api || !_apiReady) {
       setError('The API is not ready')
       return
     }
@@ -43,20 +40,23 @@ function Dashboard() {
       return
     }
     // set the first wallet as the signer (we assume there is only one wallet)
-    api.setSigner(extensions[0].signer)
+    _api.setSigner(extensions[0].signer)
     const injectedAccounts = await web3Accounts()
     if (injectedAccounts.length > 0) {
       setAccounts(injectedAccounts);
       setAccount(injectedAccounts[0]);
     }
-    const abi = new Abi(ABI, api.registry.getChainProperties())
-    const contract = new ContractPromise(api, abi, address)
+    const abi = new Abi(ABI, _api.registry.getChainProperties())
+    const contract = new ContractPromise(_api, abi, address)
     setContract(contract)
   }
 
   useEffect(() => {
     (async () => {
-      await connectWalletHandler();
+      const provider = new WsProvider('wss://rpc.shibuya.astar.network');
+      let temp = new ApiPromise({ provider });
+      await temp.isReady;
+      await connectWalletHandler(temp, true);
       setLoaded(true);
     })();
   }, []);
