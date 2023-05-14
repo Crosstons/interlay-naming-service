@@ -34,6 +34,12 @@ const Navbar = () => {
         setShowSearch(false);
       }
     };
+
+    useEffect(() => {
+      (async () => {
+        await onConnect();
+      })();
+    }, []);
   
     useEffect(() => {
       window.addEventListener('scroll', handleScroll);
@@ -45,7 +51,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         {/* Logo */}
         <a href="/" className="text-xl font-bold text-white font-mono transition duration-300 ease-in-out hover:text-blue-500">
-          Logo
+          KNS
         </a>
 
         {/* Links and Button */}

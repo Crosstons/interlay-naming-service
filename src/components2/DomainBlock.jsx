@@ -108,7 +108,7 @@ const DomainInfo = ({name}) => {
       case 'register':
         return <RegisterTab name={name}/>;
       case 'details':
-        return <DetailsTab />;
+        return <DetailsTab name={name}/>;
       case 'subdomains':
         return <SubdomainsTab />;
       case 'auction': // Add a new case for the 'auction' tab
