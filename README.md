@@ -1,3 +1,6 @@
+### Winners of Interlay & Astar Bounty
+
+> [Medium of Encode Club](https://medium.com/encode-club/encode-x-polkadot-spring-2023-hackathon-prizewinners-and-summary-3919e78a42d0) <br />
 # Kintsugi Naming Service 
 An Encode X Polkadot Hack'23 Project. 
 
